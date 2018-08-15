@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ldu.dao.RecordMapper" >
+    <resultMap id="RecordList" type="com.ldu.pojo.Record" >
+        <!-- 实体类属性对应数据库的主键字段，不然主键会查不到 -->
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="comment_status" property="commentStatus" jdbcType="BIT"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+
+        <association property="goods" column="goods_id" javaType="com.ldu.pojo.Goods" select="com.ldu.dao.GoodsMapper.selectByPrimaryKey" >
+            <!--<id column="id" property="id" jdbcType="INTEGER" />-->
+            <!--<result column="catelog_id" property="catelogId" jdbcType="INTEGER" />-->
+            <!--<result column="user_id" property="userId" jdbcType="INTEGER" />-->
+            <!--<result column="name" property="name" jdbcType="VARCHAR" />-->
+            <!--<result column="price" property="price" jdbcType="INTEGER" />-->
+            <!--<result column="percent_new" property="percentNew" jdbcType="INTEGER" />-->
+            <!--<result column="start_time" property="startTime" jdbcType="VARCHAR" />-->
+            <!--<result column="end_time" property="endTime" jdbcType="VARCHAR" />-->
+            <!--<result column="commet_num" property="commetNum" jdbcType="INTEGER" />-->
+            <!--<result column="polish_time" property="polishTime" jdbcType="VARCHAR" />-->
+            <!--<result column="check_status" property="checkStatus" jdbcType="INTEGER" />-->
+            <!--<result column="describle" property="describle" jdbcType="LONGVARCHAR" />-->
+        </association>
+    </resultMap>
+
+    <select id="selectByUserId" parameterType="Integer" resultMap="RecordList">
+        select * from record
+        where user_id = #{userId,jdbcType=INTEGER}
+    </select>
+
+</mapper>

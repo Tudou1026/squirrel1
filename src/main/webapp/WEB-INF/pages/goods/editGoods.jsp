@@ -51,7 +51,7 @@
                     <img src="">
                 </div>
                 <span class="name">${cur_user.username}</span>
-                <span class="school">鲁东大学</span>
+                <span class="school">上海大学</span>
                 <span class="name">闲置数量：${cur_user.goodsNum}</span>
             </div>
             <div class="home_nav">
@@ -101,7 +101,7 @@
         -->
         <div id="user_content">
             <div class="basic">
-                <form:form action="/goods/editGoodsSubmit" method="post" role="form" enctype="multipart/form-data">
+                <form:form action="/goods/editGoodsSubmit" method="post" commandName="goods" role="form" enctype="multipart/form-data">
                     <h1 style="margin-left: 210px;">修改物品信息</h1><hr />
                     <div class="changeinfo">
                         <span>物品名：</span>
@@ -111,12 +111,12 @@
                     <div class="changeinfo">
                         <span>出售价格：</span>
                         <input class="in_info" type="text" name="price" placeholder="请输入出售价格" value="${goodsExtend.goods.price}"/>
-                       <span>(*必填)</span>
+                       <span>([虚拟币1~10*必填)</span>
                    </div>
                    <div class="changeinfo">
                         <span>原价：</span>
-                        <input class="in_info" type="text" name="realPrice" placeholder="请输入商品原价" value="${goodsExtend.goods.realPrice}"/>
-                        <span id="checkphone">(*选填,请如实填写)</span>
+                        <input class="in_info" type="text" name="percentNew" placeholder="请输入商品成色" value="${goodsExtend.goods.percentNew}"/>
+                        <span id="checkphone">(*必填,请如实填写(1~10)</span>
                      </div>
                      <div class="changeinfo">
                         <span>物品类别：</span>

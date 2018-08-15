@@ -1,7 +1,9 @@
 package com.ldu.dao;
 
 import com.ldu.pojo.Notice;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface NoticeMapper {
     int deleteByPrimaryKey(Integer id);
 

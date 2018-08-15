@@ -1,7 +1,9 @@
 package com.ldu.dao;
 
 import com.ldu.pojo.Comments;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface CommentsMapper {
     int deleteByPrimaryKey(Integer id);
 

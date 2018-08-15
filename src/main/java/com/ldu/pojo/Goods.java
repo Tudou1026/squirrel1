@@ -25,7 +25,7 @@ public class Goods {
 
     private Integer price;
 
-    private Integer percentOfNew;
+    private Integer percentNew;
 
     private String startTime;
 
@@ -36,5 +36,6 @@ public class Goods {
     private Integer commetNum;
 
     private String describle;
-
+    //商品状态: 0,未通过审核; 1,审核通过,待售; 2,已售出
+    private Integer checkStatus;
 }

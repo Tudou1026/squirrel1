@@ -3,7 +3,9 @@ package com.ldu.dao;
 import java.util.List;
 
 import com.ldu.pojo.Image;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface ImageMapper {
     int deleteByPrimaryKey(Integer id);
 

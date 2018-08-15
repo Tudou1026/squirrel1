@@ -44,7 +44,7 @@
                     <img src="">
                 </div>
                 <span class="name">${cur_user.username}</span>
-                <span class="school">鲁东大学</span>
+                <span class="school">上海大学</span>
                 <span class="name">闲置数量：${cur_user.goodsNum}</span>
                 <span class="fa fa-share-alt">"快去分享一下"</span>
             </div>
@@ -54,13 +54,6 @@
                         <li class="notice">
                             <div></div>
                             <span>我的消息</span>
-                            <strong></strong>
-                        </li>
-                    </a>
-                    <a href="">
-                        <li class="fri">
-                            <div></div>
-                            <span>关注列表</span>
                             <strong></strong>
                         </li>
                     </a>
@@ -82,6 +75,13 @@
                         <li class="second">
                             <div></div>
                             <span>我的闲置</span>
+                            <strong></strong>
+                        </li>
+                    </a>
+                    <a href="/user/records">
+                        <li class="fri">
+                            <div></div>
+                            <span>购物记录</span>
                             <strong></strong>
                         </li>
                     </a>

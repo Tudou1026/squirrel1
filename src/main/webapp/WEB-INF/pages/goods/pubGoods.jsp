@@ -54,7 +54,7 @@
                     <img src="">
                 </div>
                 <span class="name">${cur_user.username}</span>
-                <span class="school">鲁东大学</span>
+                <span class="school">上海大学</span>
                 <span class="name">闲置数量：${cur_user.goodsNum}</span>
             </div>
             <div class="home_nav">
@@ -63,13 +63,6 @@
                         <li class="notice">
                             <div></div>
                             <span>我的消息</span>
-                            <strong></strong>
-                        </li>
-                    </a>
-                    <a href="">
-                        <li class="fri">
-                            <div></div>
-                            <span>关注列表</span>
                             <strong></strong>
                         </li>
                     </a>
@@ -94,6 +87,13 @@
                             <strong></strong>
                         </li>
                     </a>
+                    <a href="/user/records">
+                        <li class="fri">
+                            <div></div>
+                            <span>购物记录</span>
+                            <strong></strong>
+                        </li>
+                    </a>
                 </ul>
             </div>
         </div>
@@ -104,7 +104,7 @@
         -->
         <div id="user_content">
             <div class="basic">
-                <form:form action="/goods/publishGoodsSubmit" method="post" role="form" enctype="multipart/form-data">
+                <form:form action="/goods/publishGoodsSubmit" method="post" commandName="goods" role="form" enctype="multipart/form-data">
                     <h1 style="margin-left: 210px;">发布物品</h1><hr />
                     <div class="changeinfo">
                         <span>物品名：</span>
@@ -114,12 +114,12 @@
                     <div class="changeinfo">
                         <span>出售价格：</span>
                         <input class="in_info" type="text" name="price" placeholder="请输入出售价格"/>
-                        <span>(*必填)</span>
+                        <span>([虚拟币1~10]*必填)</span>
                     </div>
                     <div class="changeinfo">
-                        <span>原价：</span>
-                        <input class="in_info" type="text" name="realPrice" placeholder="请输入商品原价"/>
-                        <span id="checkphone">(*选填,请如实填写)</span>
+                        <span>成色：</span>
+                        <input class="in_info" type="text" name="percentNew" placeholder="请输入商品成色"/>
+                        <span id="checkphone">(*必填,请如实填写(1~10))</span>
                     </div>
                     <div class="changeinfo">
                         <span>物品类别：</span>
@@ -145,8 +145,7 @@
                             </div>
                         </div>
                     </div>
-                    <br />
-                    <hr />
+
                     <div class="changeinfo">
                         <span>商品图片：</span>
                         <div class="container">
@@ -232,7 +231,7 @@
         //maxImageHeight: 1000,//图片的最大高度
         //maxFileSize: 0,//单位为kb，如果为0表示不限制文件大小
         //minFileCount: 0,
-        maxFileCount: 3, //表示允许同时上传的最大文件个数
+        maxFileCount: 2, //表示允许同时上传的最大文件个数
         enctype: 'multipart/form-data',
         validateInitialCount:true,
         previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",

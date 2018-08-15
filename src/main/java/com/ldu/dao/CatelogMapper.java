@@ -2,9 +2,10 @@ package com.ldu.dao;
 
 import com.ldu.pojo.Catelog;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+@Repository
 public interface CatelogMapper {
     int deleteByPrimaryKey(Integer id);
 

@@ -5,7 +5,9 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.ldu.pojo.Goods;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface GoodsMapper {
     /**
      * 通过主键删除

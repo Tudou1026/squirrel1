@@ -9,7 +9,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>鲁大二手工坊</title>
+    <title>上大二手工坊</title>
     <link rel="stylesheet" href="../css/index.css" />
     <script type="text/javascript" src="../js/jquery.js" ></script>
     <script type="text/javascript" src="../js/materialize.min.js" ></script>

@@ -1,30 +1,19 @@
 package com.ldu.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.*;
 import java.io.File;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.ldu.pojo.*;
-import com.ldu.service.CatelogService;
-import com.ldu.service.ImageService;
-import com.ldu.service.UserService;
+import com.ldu.service.*;
 import com.ldu.util.DateUtil;
-import com.sun.tracing.dtrace.Attributes;
-import org.apache.poi.util.SystemOutLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.ldu.service.GoodsService;
 
 @Controller
 @RequestMapping(value = "/goods")
@@ -32,12 +21,18 @@ public class GoodsController {
 
     @Autowired
     private GoodsService goodsService;
+
     @Autowired
     private ImageService imageService;
+
     @Autowired
     private CatelogService catelogService;
+
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RecordService recordService;
 
     /**
      * 首页显示商品，每一类商品查询6件，根据最新上架排序 key的命名为catelogGoods1、catelogGoods2....
@@ -153,16 +148,32 @@ public class GoodsController {
      */
     @RequestMapping(value = "/editGoods/{id}")
     public ModelAndView editGoods(@PathVariable("id") Integer id) throws Exception {
-
         Goods goods = goodsService.getGoodsByPrimaryKey(id);
+        //System.out.println(goods);
         List<Image> imageList = imageService.getImagesByGoodsPrimaryKey(id);
+        //System.out.println(imageList);
         GoodsExtend goodsExtend = new GoodsExtend();
         goodsExtend.setGoods(goods);
         goodsExtend.setImages(imageList);
+        //System.out.println(goodsExtend);
         ModelAndView modelAndView = new ModelAndView();
-        // 将商品信息添加到model
+        //将商品信息添加到model
         modelAndView.addObject("goodsExtend", goodsExtend);
         modelAndView.setViewName("/goods/editGoods");
+        return modelAndView;
+    }
+
+    /**
+     * author:guoxilong
+     * 跳到打分页面
+     */
+    @RequestMapping(value = "/evaluateGoods/{id}&{userId}")
+    public ModelAndView evaluateGoods(@PathVariable("id") Integer id, @PathVariable("userId") Integer userId,
+                                 HttpServletRequest request){
+        request.getSession().setAttribute("recordId", id);
+        request.getSession().setAttribute("goodsUserId", userId);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("/goods/goodsScore");
         return modelAndView;
     }
 
@@ -240,16 +251,18 @@ public class GoodsController {
      * @throws Exception
      */
     @RequestMapping(value = "/publishGoodsSubmit")
-    public String publishGoodsSubmit(HttpServletRequest request,Image ima,Goods goods,MultipartFile image)
+    public String publishGoodsSubmit(HttpServletRequest request,Image ima,@ModelAttribute("goods")Goods goods)
             throws Exception {
         //查询出当前用户cur_user对象，便于使用id
         User cur_user = (User)request.getSession().getAttribute("cur_user");
-
         goods.setUserId(cur_user.getId());
+        goods.setCommetNum(0);
         int i = goodsService.addGood(goods,10);//在goods表中插入物品
         //返回插入的该物品的id
         int goodsId = goods.getId();
+        String imgUrl = String.valueOf(request.getSession().getAttribute("imgUrl"));
         ima.setGoodsId(goodsId);
+        ima.setImgUrl(imgUrl);
         imageService.insert(ima);//在image表中插入商品图片
         //发布商品后，catlog的number+1，user表的goods_num+1，更新session的值
         int number = cur_user.getGoodsNum();
@@ -281,6 +294,7 @@ public class GoodsController {
         if(myfile!=null && oldFileName!=null && oldFileName.length()>0){
             //新的图片名称
             String newFileName = UUID.randomUUID() + oldFileName.substring(oldFileName.lastIndexOf("."));
+            session.setAttribute("imgUrl",newFileName);
             //新图片
             File newFile = new File(file_path+"/"+newFileName);
             //将内存中的数据写入磁盘

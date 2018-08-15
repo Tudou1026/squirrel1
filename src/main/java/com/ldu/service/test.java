@@ -15,8 +15,38 @@ public class test {
     @Autowired
     private GoodsService goodsService;
 
+    @Autowired
+    private ImageService imageService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    RecordService recordService;
+
     @Test
     public void Get() {
         System.out.println(goodsService.getGoodsByUserId(2));
+    }
+
+    @Test
+    public void getGoods(){
+        System.out.println(goodsService.getGoodsByPrimaryKey(49));
+    }
+
+    @Test
+    public void  getImage(){
+        System.out.println(imageService.getImagesByGoodsPrimaryKey(49));
+    }
+
+    @Test
+    public void  getUser(){
+        System.out.println(userService.selectByPrimaryKey(2));
+        System.out.println(userService.getUserByPhone("18021018582"));
+    }
+
+    @Test
+    public void getRecord(){
+        System.out.println(recordService.selectByUserId(2));
     }
 }

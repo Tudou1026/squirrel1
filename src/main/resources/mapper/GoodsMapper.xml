@@ -7,37 +7,39 @@
     <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="price" property="price" jdbcType="INTEGER" />
-    <result column="percentOfNew" property="percent_New" jdbcType="INTEGER" />
+    <result column="percent_new" property="percentNew" jdbcType="INTEGER" />
     <result column="start_time" property="startTime" jdbcType="VARCHAR" />
     <result column="end_time" property="endTime" jdbcType="VARCHAR" />
     <result column="commet_num" property="commetNum" jdbcType="INTEGER" />
     <result column="polish_time" property="polishTime" jdbcType="VARCHAR" />
+    <result column="check_status" property="checkStatus" jdbcType="INTEGER" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="com.ldu.pojo.Goods" extends="BaseResultMap" >
     <result column="describle" property="describle" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, catelog_id, user_id, name, price, percent_New, start_time, polish_time, end_time, commet_num
+    id, catelog_id, user_id, name, price, percent_new, start_time, polish_time, end_time, commet_num, check_status
   </sql>
   <sql id="Blob_Column_List" >
     describle
   </sql>
-  <sql id="Factor">
-    and end_time >= now() order by polish_time DESC
-  </sql>
+
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
     select
     *
     from goods
     where id = #{id,jdbcType=INTEGER}
-    <include refid="Factor"></include>
+    and str_to_date(end_time,'%Y-%m-%d') >= curdate()
+    and check_status=1
+#     order by str_to_date(polish_time,'%Y-%m-%d') DESC
   </select>
   <select id="searchGoodsOrderByNew" resultMap="ResultMapWithBLOBs" parameterType="String" >
     select
     *
     from goods
     where name like concat('%',#{name},'%') OR describle like concat('%',#{describle},'%')
-    order by percent_New DESC
+    and check_status=1
+    order by percent_new DESC
   </select>
 
   <select id="searchGoodsOrderByCredit" resultMap="ResultMapWithBLOBs" parameterType="String" >
@@ -46,6 +48,7 @@
     from goods as a
     join user as b on a.userId=b.userId
     where a.name like concat('%',#{name},'%') OR a.describle like concat('%',#{describle},'%')
+    and check_status=1
     order by b.credit DESC
   </select>
 
@@ -58,19 +61,24 @@
     <if test="describle != null" >
      OR describle like concat('%',#{describle},'%'))
     </if>
-    <include refid="Factor"></include>
+    and str_to_date(end_time,'%Y-%m-%d') >= curdate()
+    and check_status=1
+    order by str_to_date(polish_time,'%Y-%m-%d') DESC
   </select>
   <select id="selectAllGoods" resultMap="ResultMapWithBLOBs">
     select * from goods
+    where check_status=1
   </select>
   <select id="getGoodsByUserId" resultMap="ResultMapWithBLOBs">
     select * from goods where user_id = #{user_id,jdbcType=INTEGER}
+                          and check_status=1
   </select>
 
   <select id="selectByCatelogOrderByDate" resultMap="ResultMapWithBLOBs">
     select * from goods
     where catelog_id = #{catelogId,jdbcType=INTEGER}
-    order by polish_time DESC
+      and check_status=1
+    order by str_to_date(polish_time,'%Y-%m-%d') DESC
     limit #{limit,jdbcType=INTEGER}
   </select>
 
@@ -81,12 +89,13 @@
 
   <insert id="insert" parameterType="com.ldu.pojo.Goods" useGeneratedKeys="true" keyProperty="id">
     insert into goods (id, catelog_id, user_id,
-    name, price, real_price, start_time,
-    end_time, polish_time, commet_num, describle)
+    name, price, percent_new, start_time,
+    end_time, polish_time, commet_num, describle, check_status)
     values (#{id,jdbcType=INTEGER}, #{catelogId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
-    #{name,jdbcType=VARCHAR}, #{price,jdbcType=REAL}, #{realPrice,jdbcType=REAL}, #{startTime,jdbcType=VARCHAR},
+    #{name,jdbcType=VARCHAR}, #{price,jdbcType=INTEGER}, #{percentNew,jdbcType=INTEGER}, #{startTime,jdbcType=VARCHAR},
     #{endTime,jdbcType=VARCHAR}, #{polishTime,jdbcType=VARCHAR}, #{commetNum,jdbcType=INTEGER}, #{describle,jdbcType=LONGVARCHAR}
-    )
+         #{checkStatus,jdbcType=BIT}
+     )
   </insert>
   <insert id="insertSelective" parameterType="com.ldu.pojo.Goods" >
     insert into goods
@@ -106,8 +115,8 @@
       <if test="price != null" >
         price,
       </if>
-      <if test="realPrice != null" >
-        real_price,
+      <if test="percentNew != null" >
+        percent_new,
       </if>
       <if test="startTime != null" >
         start_time,
@@ -124,6 +133,9 @@
       <if test="describle != null" >
         describle,
       </if>
+      <if test="checkStatus != null" >
+        check_status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -139,10 +151,10 @@
         #{name,jdbcType=VARCHAR},
       </if>
       <if test="price != null" >
-        #{price,jdbcType=REAL},
+        #{price,jdbcType=INTEGER},
       </if>
-      <if test="realPrice != null" >
-        #{realPrice,jdbcType=REAL},
+      <if test="percentNew != null" >
+        #{percentNew,jdbcType=INTEGER},
       </if>
       <if test="startTime != null" >
         #{startTime,jdbcType=VARCHAR},
@@ -159,6 +171,9 @@
       <if test="describle != null" >
         #{describle,jdbcType=LONGVARCHAR},
       </if>
+      <if test="checkStatus != null" >
+        #{checkStatus,jdbdType=BIT},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.ldu.pojo.Goods" >
@@ -174,10 +189,10 @@
         name = #{name,jdbcType=VARCHAR},
       </if>
       <if test="price != null" >
-        price = #{price,jdbcType=REAL},
+        price = #{price,jdbcType=INTEGER},
       </if>
-      <if test="realPrice != null" >
-        real_price = #{realPrice,jdbcType=REAL},
+      <if test="percentNew != null" >
+        percent_new = #{percentNew,jdbcType=INTEGER},
       </if>
       <if test="startTime != null" >
         start_time = #{startTime,jdbcType=VARCHAR},
@@ -194,6 +209,9 @@
       <if test="describle != null" >
         describle = #{describle,jdbcType=LONGVARCHAR},
       </if>
+      <if test="checkStatus != null" >
+        check_status = #{checkStatus,jdbcType=BIT},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -202,13 +220,14 @@
     set catelog_id = #{catelogId,jdbcType=INTEGER},
       user_id = #{userId,jdbcType=INTEGER},
       name = #{name,jdbcType=VARCHAR},
-      price = #{price,jdbcType=REAL},
-      real_price = #{realPrice,jdbcType=REAL},
+      price = #{price,jdbcType=INTEGER},
+      percent_new = #{percentNew,jdbcType=INTEGER},
       start_time = #{startTime,jdbcType=VARCHAR},
       end_time = #{endTime,jdbcType=VARCHAR},
       polish_time = #{polishTime,jdbcType=VARCHAR},
       commet_num = #{commetNum,jdbcType=INTEGER},
-      describle = #{describle,jdbcType=LONGVARCHAR}
+      describle = #{describle,jdbcType=LONGVARCHAR},
+      check_status = #{checkStatus,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.ldu.pojo.Goods" >
@@ -216,13 +235,14 @@
     set catelog_id = #{catelogId,jdbcType=INTEGER},
       user_id = #{userId,jdbcType=INTEGER},
       name = #{name,jdbcType=VARCHAR},
-      price = #{price,jdbcType=REAL},
-      real_price = #{realPrice,jdbcType=REAL},
+      price = #{price,jdbcType=INTEGER},
+      percent_new = #{percentNew,jdbcType=INTEGER},
       start_time = #{startTime,jdbcType=VARCHAR},
       end_time = #{endTime,jdbcType=VARCHAR},
       polish_time = #{polishTime,jdbcType=VARCHAR},
       commet_num = #{commetNum,jdbcType=INTEGER},
-      describle = #{describle,jdbcType=LONGVARCHAR}
+      describle = #{describle,jdbcType=LONGVARCHAR},
+      check_status = #{checkStatus,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

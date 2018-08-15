@@ -1,7 +1,9 @@
 package com.ldu.dao;
 
 import com.ldu.pojo.Reply;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface ReplyMapper {
     int deleteByPrimaryKey(Integer id);
 

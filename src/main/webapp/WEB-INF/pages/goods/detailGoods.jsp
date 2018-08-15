@@ -242,12 +242,12 @@
     </div>
     <div class="col s6">
         <h1 class="item-name">${goodsExtend.goods.name}</h1>
-        <h2 class="item-price">${goodsExtend.goods.price}</h2>
+        <h2 class="item-price">${goodsExtend.goods.price}（虚拟币)</h2>
         <div class="item-public-info">
-            <p class="bargain">可讲价</p>
+            <p class="bargain">不可讲价</p>
             <p>
                 <i class="iconfont"></i>
-                <em class="item-location">鲁东大学</em>
+                <em class="item-location">上海大学</em>
             </p>
         </div>
         <div class="publisher-info-title">
@@ -283,12 +283,12 @@
                     </div>
                     <div class="value">${seller.qq}</div>
                 </div>
-                <div>
-                    <div class="base-blue z-depth-1 attr">
-                        <i class="iconfont"></i>
-                    </div>
-                    <div class="value"></div>
-                </div>
+                <%--<div>--%>
+                    <%--<div class="base-blue z-depth-1 attr">--%>
+                        <%--<i class="iconfont"></i>--%>
+                    <%--</div>--%>
+                    <%--<div class="value"></div>--%>
+                <%--</div>--%>
             </div>
         </c:if>
         <h1 class="item-pub-time">发布于 ${goodsExtend.goods.startTime}</h1>

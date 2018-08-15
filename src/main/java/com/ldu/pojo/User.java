@@ -28,15 +28,16 @@ public class User {
     private String createAt;
 
     private Integer goodsNum;
-
     //信誉分
     private Double credit;
 
     private String lastLogin;
-
     //账号状态，是否被冻结
     private Byte status;
-
+    //用户权限 true为管理员, false为普通用户
     private Boolean power;
-
+    //被评价次数
+    private Integer markNum;
+    //用户虚拟币积蓄(系统默认赠送10个）
+    private Integer savings;
 }

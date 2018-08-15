@@ -1,24 +1,21 @@
 package com.ldu.controller;
 
-import com.ldu.pojo.Goods;
-import com.ldu.pojo.GoodsExtend;
-import com.ldu.pojo.User;
+import com.ldu.pojo.*;
 import com.ldu.service.GoodsService;
 import com.ldu.service.ImageService;
+import com.ldu.service.RecordService;
 import com.ldu.util.DateUtil;
 import com.ldu.util.MD5;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import com.ldu.pojo.Image;
 import com.ldu.service.UserService;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
-
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,13 +23,17 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "/user")
 public class UserController {
-
-    @Resource
+    @Autowired
     private UserService userService;
-    @Resource
+
+    @Autowired
     private GoodsService goodsService;
-    @Resource
+
+    @Autowired
     private ImageService imageService;
+
+    @Autowired
+    private RecordService recordService;
 
     /**
      * 用户注册
@@ -166,4 +167,35 @@ public class UserController {
         mv.setViewName("/user/goods");
         return mv;
     }
+
+    /**
+     * 查询购物记录
+     * Author:guoxilong
+     */
+    @RequestMapping(value = "/records")
+    private ModelAndView goodsRecords(HttpServletRequest request) throws ParseException {
+        User cur_user = (User)request.getSession().getAttribute("cur_user");
+        Integer userId = cur_user.getId();
+        List<Record> recordsList = recordService.selectByUserId(userId);
+        //System.out.println(recordsList);
+        List<RecordExtend> recordsAndImage = new ArrayList<RecordExtend>();
+        for (Record record:recordsList) {
+            //将用户购物信息和image信息封装到recordExtend类中，传给前台
+            RecordExtend recordExtend = new RecordExtend();
+            Goods goods = record.getGoods();
+           // System.out.println(goods);
+            List<Image> images = imageService.getImagesByGoodsPrimaryKey(goods.getId());
+           // System.out.println(images);
+            recordExtend.setRecord(record);
+            recordExtend.setImages(images);
+            recordsAndImage.add(recordExtend);
+           // System.out.println(recordsAndImage);
+        }
+       // System.out.println(recordsAndImage);
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("recordsAndImage",recordsAndImage);
+        mv.setViewName("/user/goodsRecords");
+        return mv;
+    }
+
 }

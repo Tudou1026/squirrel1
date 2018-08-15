@@ -13,9 +13,11 @@
     <result column="last_login" property="lastLogin" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="TINYINT" />
     <result column="power" property="power" jdbcType="BIT" />
+    <result column="mark_num" property="markNum" jdbcType="INTEGER" />
+    <result column="savings" property="savings" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, phone, username, password, QQ, create_at, goods_num, credit, last_login, status, power
+    id, phone, username, password, QQ, create_at, goods_num, credit, last_login, status, power, mark_num, savings
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select
@@ -45,12 +47,12 @@
   <insert id="insert" parameterType="com.ldu.pojo.User" >
     insert into user (id, phone, username, 
       password, QQ, create_at, 
-      goods_num, power, last_login, 
-      status)
+      goods_num, last_login,
+      status, power, mark_num, savings)
     values (#{id,jdbcType=INTEGER}, #{phone,jdbcType=CHAR}, #{username,jdbcType=VARCHAR}, 
       #{password,jdbcType=CHAR}, #{qq,jdbcType=VARCHAR}, #{createAt,jdbcType=VARCHAR}, 
-      #{goodsNum,jdbcType=INTEGER}, #{power,jdbcType=TINYINT}, #{lastLogin,jdbcType=VARCHAR}, 
-      #{status,jdbcType=TINYINT})
+      #{goodsNum,jdbcType=INTEGER}, #{lastLogin,jdbcType=VARCHAR},
+      #{status,jdbcType=TINYINT}, #{power,jdbcType=TINYINT}, #{markNum,jdbcType=INTEGER}, #{savings,jdbcType=INTEGER} )
   </insert>
   <insert id="insertSelective" parameterType="com.ldu.pojo.User" >
     insert into user
@@ -76,14 +78,20 @@
       <if test="goodsNum != null" >
         goods_num,
       </if>
-      <if test="power != null" >
-        power,
-      </if>
       <if test="lastLogin != null" >
         last_login,
       </if>
       <if test="status != null" >
         status,
+      </if>
+      <if test="power != null" >
+        power,
+      </if>
+      <if test="markNum != null" >
+        mark_num,
+      </if>
+      <if test="savings != null" >
+        savings,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -108,14 +116,20 @@
       <if test="goodsNum != null" >
         #{goodsNum,jdbcType=INTEGER},
       </if>
-      <if test="power != null" >
-        #{power,jdbcType=TINYINT},
-      </if>
       <if test="lastLogin != null" >
         #{lastLogin,jdbcType=VARCHAR},
       </if>
       <if test="status != null" >
         #{status,jdbcType=TINYINT},
+      </if>
+      <if test="power != null" >
+        #{power,jdbcType=BIT},
+      </if>
+      <if test="markNum != null" >
+        #{markNum,jdbcType=INTEGER},
+      </if>
+      <if test="savings != null" >
+        #{savings,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -140,14 +154,20 @@
       <if test="goodsNum != null" >
         goods_num = #{goodsNum,jdbcType=INTEGER},
       </if>
-      <if test="power != null" >
-        power = #{power,jdbcType=TINYINT},
-      </if>
       <if test="lastLogin != null" >
         last_login = #{lastLogin,jdbcType=VARCHAR},
       </if>
       <if test="status != null" >
         status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="power != null" >
+        power = #{power,jdbcType=BIT},
+      </if>
+      <if test="markNum != null" >
+        mark_num = #{markNum,jdbcType=INTEGER},
+      </if>
+      <if test="savings != null" >
+        savings = #{savings,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -160,9 +180,11 @@
       QQ = #{qq,jdbcType=VARCHAR},
       create_at = #{createAt,jdbcType=VARCHAR},
       goods_num = #{goodsNum,jdbcType=INTEGER},
-      power = #{power,jdbcType=TINYINT},
       last_login = #{lastLogin,jdbcType=VARCHAR},
-      status = #{status,jdbcType=TINYINT}
+      status = #{status,jdbcType=TINYINT},
+      power = #{power,jdbcType=TINYINT},
+      mark_num = #{markNum,jdbcType=INTEGER},
+      savings = #{savings,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateGoodsNum" parameterType="Integer" >
