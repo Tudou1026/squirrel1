@@ -50,7 +50,11 @@ public class UserController {
             String str = MD5.md5(user1.getPassword());
             user1.setCreateAt(t);//创建开始时间
             user1.setPassword(str);
+            user1.setSavings(10);
             user1.setGoodsNum(0);
+            user1.setMarkNum(0);
+            user1.setPower(false);
+            user1.setStatus(true);
             userService.addUser(user1);
         }
         return "redirect:"+url;
@@ -69,9 +73,14 @@ public class UserController {
         String url=request.getHeader("Referer");
         if(cur_user != null) {
             String pwd = MD5.md5(user.getPassword());
-            if(pwd.equals(cur_user.getPassword())) {
-                request.getSession().setAttribute("cur_user",cur_user);
-                return new ModelAndView("redirect:"+url);
+            if(pwd.equals(cur_user.getPassword()) && cur_user.getStatus()==true) {
+                if(cur_user.getPower()==false) {
+                    request.getSession().setAttribute("cur_user", cur_user);
+                    return new ModelAndView("redirect:" + url);
+                }
+                else{
+                    //管理员要进入的页面
+                }
             }
         }
         return new ModelAndView("redirect:"+url);
@@ -129,7 +138,11 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/home")
-    public String home() {
+    public String home(HttpServletRequest request) {
+        User cur_user = (User)request.getSession().getAttribute("cur_user");
+        List<Record> list = recordService.selectByUserId(cur_user.getId());
+        int goodsNum = list.size();
+        request.setAttribute("goodsNum", goodsNum);
         return "/user/home";
     }
 
@@ -138,7 +151,11 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/basic")
-    public String basic() {
+    public String basic(HttpServletRequest request) {
+        User cur_user = (User)request.getSession().getAttribute("cur_user");
+        List<Record> list = recordService.selectByUserId(cur_user.getId());
+        int goodsNum = list.size();
+        request.setAttribute("goodsNum", goodsNum);
         return "/user/basic";
     }
 
@@ -153,15 +170,7 @@ public class UserController {
         Integer userId = cur_user.getId();
         List<Goods> goodsList = goodsService.getGoodsByUserId(userId);
         List<GoodsExtend> goodsAndImage = new ArrayList<GoodsExtend>();
-        for (int i = 0; i < goodsList.size() ; i++) {
-            //将用户信息和image信息封装到GoodsExtend类中，传给前台
-            GoodsExtend goodsExtend = new GoodsExtend();
-            Goods goods = goodsList.get(i);
-            List<Image> images = imageService.getImagesByGoodsPrimaryKey(goods.getId());
-            goodsExtend.setGoods(goods);
-            goodsExtend.setImages(images);
-            goodsAndImage.add(i, goodsExtend);
-        }
+        GoodsController.selectGoodsSort(goodsList, goodsAndImage, imageService);
         ModelAndView mv = new ModelAndView();
         mv.addObject("goodsAndImage",goodsAndImage);
         mv.setViewName("/user/goods");
@@ -173,25 +182,24 @@ public class UserController {
      * Author:guoxilong
      */
     @RequestMapping(value = "/records")
-    private ModelAndView goodsRecords(HttpServletRequest request) throws ParseException {
+    private ModelAndView goodsRecords(HttpServletRequest request) {
         User cur_user = (User)request.getSession().getAttribute("cur_user");
         Integer userId = cur_user.getId();
         List<Record> recordsList = recordService.selectByUserId(userId);
-        //System.out.println(recordsList);
+        System.out.println(recordsList);
         List<RecordExtend> recordsAndImage = new ArrayList<RecordExtend>();
-        for (Record record:recordsList) {
+        for (int i = 0; i < recordsList.size(); i++) {
             //将用户购物信息和image信息封装到recordExtend类中，传给前台
             RecordExtend recordExtend = new RecordExtend();
-            Goods goods = record.getGoods();
-           // System.out.println(goods);
+            System.out.println(recordExtend);
+            Goods goods = recordsList.get(i).getGoods();
+            System.out.println(goods);
             List<Image> images = imageService.getImagesByGoodsPrimaryKey(goods.getId());
-           // System.out.println(images);
-            recordExtend.setRecord(record);
+            System.out.println(images);
+            recordExtend.setRecord(recordsList.get(i));
             recordExtend.setImages(images);
-            recordsAndImage.add(recordExtend);
-           // System.out.println(recordsAndImage);
+            recordsAndImage.add(i, recordExtend);
         }
-       // System.out.println(recordsAndImage);
         ModelAndView mv = new ModelAndView();
         mv.addObject("recordsAndImage",recordsAndImage);
         mv.setViewName("/user/goodsRecords");

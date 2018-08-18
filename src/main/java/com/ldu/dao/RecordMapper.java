@@ -1,9 +1,8 @@
 package com.ldu.dao;
 
-import com.ldu.pojo.Goods;
 import com.ldu.pojo.Record;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 /**
@@ -11,9 +10,13 @@ import java.util.List;
  */
 @Repository
 public interface RecordMapper {
-    int insertRecord(Record record);
+    int addRecord(@Param("user_id") Integer user_id, @Param("goods_id") Integer goods_id);
+
+    Record selectById(@Param("id") Integer id);
 
     List<Record> selectByUserId(Integer userId);
 
-    int updateRecord(Integer userId, Integer goodsId);
+    int updateRecord(Integer id);
+
+    int deleteRecord(Integer id);
 }

@@ -29,6 +29,7 @@
 <br>
 &nbsp;&nbsp;&nbsp; <h2>给您的购物打个分吧</h2><hr />
 <br>
+<form action="/goods/markSubmit" method="post">
 <div class="stars">
     <span>描述相符：</span>
     <i>★</i>
@@ -45,7 +46,7 @@
     <i class="" score="3,一般">★</i>
     <i class="" score="4,满意">★</i>
     <i class="" score="5,非常满意">★</i>
-    <input type="text" name="score2 "/>
+    <input type="text" name="score2"/>
 </div>
 <div class="stars">
     <span>线下体验：</span>
@@ -56,7 +57,6 @@
     <i>★</i>
     <input type="text" name="score3"/>
 </div>
-<form action="/goods/markSubmit" method="post">
     &nbsp;&nbsp;&nbsp;<input type="submit" value="提交评价">
 </form>
 <script>

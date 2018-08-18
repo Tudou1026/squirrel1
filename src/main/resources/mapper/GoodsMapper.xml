@@ -33,6 +33,14 @@
     and check_status=1
 #     order by str_to_date(polish_time,'%Y-%m-%d') DESC
   </select>
+
+  <select id="selectById" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select
+    *
+    from goods
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
   <select id="searchGoodsOrderByNew" resultMap="ResultMapWithBLOBs" parameterType="String" >
     select
     *
@@ -45,11 +53,13 @@
   <select id="searchGoodsOrderByCredit" resultMap="ResultMapWithBLOBs" parameterType="String" >
     select
     *
-    from goods as a
-    join user as b on a.userId=b.userId
+    from goods a
+    join user b
+    on a.user_id=b.id
     where a.name like concat('%',#{name},'%') OR a.describle like concat('%',#{describle},'%')
-    and check_status=1
+                                                and check_status=1
     order by b.credit DESC
+
   </select>
 
   <select id="selectByCatelog" resultMap="ResultMapWithBLOBs">
@@ -65,10 +75,19 @@
     and check_status=1
     order by str_to_date(polish_time,'%Y-%m-%d') DESC
   </select>
+
   <select id="selectAllGoods" resultMap="ResultMapWithBLOBs">
     select * from goods
     where check_status=1
   </select>
+
+  <select id="selectOrderByDate" resultMap="ResultMapWithBLOBs">
+    select * from goods
+    where check_status=1
+    order by polish_time desc
+    limit 10
+  </select>
+
   <select id="getGoodsByUserId" resultMap="ResultMapWithBLOBs">
     select * from goods where user_id = #{user_id,jdbcType=INTEGER}
                           and check_status=1
@@ -88,13 +107,12 @@
   </delete>
 
   <insert id="insert" parameterType="com.ldu.pojo.Goods" useGeneratedKeys="true" keyProperty="id">
-    insert into goods (id, catelog_id, user_id,
-    name, price, percent_new, start_time,
-    end_time, polish_time, commet_num, describle, check_status)
+    insert into goods (id, catelog_id, user_id, name, price, percent_new,
+                       start_time, end_time, polish_time, commet_num, describle, check_status)
     values (#{id,jdbcType=INTEGER}, #{catelogId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
-    #{name,jdbcType=VARCHAR}, #{price,jdbcType=INTEGER}, #{percentNew,jdbcType=INTEGER}, #{startTime,jdbcType=VARCHAR},
-    #{endTime,jdbcType=VARCHAR}, #{polishTime,jdbcType=VARCHAR}, #{commetNum,jdbcType=INTEGER}, #{describle,jdbcType=LONGVARCHAR}
-         #{checkStatus,jdbcType=BIT}
+            #{name,jdbcType=VARCHAR}, #{price,jdbcType=INTEGER}, #{percentNew,jdbcType=INTEGER},
+            #{startTime,jdbcType=VARCHAR},#{endTime,jdbcType=VARCHAR}, #{polishTime,jdbcType=VARCHAR},
+            #{commetNum,jdbcType=INTEGER}, #{describle,jdbcType=LONGVARCHAR}, #{checkStatus,jdbcType=BIT}
      )
   </insert>
   <insert id="insertSelective" parameterType="com.ldu.pojo.Goods" >

@@ -44,6 +44,30 @@
                 $("#changeName").css("display","none");
             }
         }
+        function check(){
+            var price = '${goodsExtend.goods.price}';
+            var savings = '${cur_user.savings}';
+            if(parseInt(savings) < parseInt(price)){
+                alert("您的积蓄不足,无法下单!小松建议您去多多发布商品吧");
+                return false;
+            }
+            else{
+                if(!confirm("主人,您确定要购买该商品吗？")){
+                    return false;
+                }
+                else
+                    return true;
+            }
+        }
+        // function checkForm() {
+        //     var flag = true;
+        //     var message = document.getElementById("message").value;
+        //     if (message != 'null') {
+        //         alert(message);
+        //         flag = false;
+        //     }
+        //     return flag;
+        // }
     </script>
 <body ng-view="ng-view">
 <!--
@@ -140,7 +164,7 @@
                     <div class="input-field col s12">
                         <input type="password" name="password" required="required" class="validate ng-pristine ng-untouched ng-empty ng-invalid ng-invalid-required" />
                         <label>密码</label>
-                        <a ng-click="showForget()" class="forget-btn">忘记密码？</a>
+                        <%--<a ng-click="showForget()" class="forget-btn">忘记密码？</a>--%>
                     </div>
                     <button type="submit" class="waves-effect waves-light btn login-btn red lighten-1">
                         <i class="iconfont left"></i>
@@ -243,6 +267,8 @@
     <div class="col s6">
         <h1 class="item-name">${goodsExtend.goods.name}</h1>
         <h2 class="item-price">${goodsExtend.goods.price}（虚拟币)</h2>
+        <h3 class="item-price">${goodsExtend.goods.percentNew}成新</h3>
+        <h4 class="item-price">卖家信誉分:${seller.credit}</h4>
         <div class="item-public-info">
             <p class="bargain">不可讲价</p>
             <p>
@@ -292,7 +318,26 @@
             </div>
         </c:if>
         <h1 class="item-pub-time">发布于 ${goodsExtend.goods.startTime}</h1>
+        <c:if test="${!empty cur_user}">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <form action="/goods/buyGoods" onsubmit="return check()">
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="submit" value="我要下单">
+            </form>
+        </c:if>
+        <c:if test="${empty cur_user}">
+            <c:out value=""></c:out>
+        </c:if>
+        <%--<input type="hidden" id="message" name="message" value="<%=request.getAttribute("message") %>">--%>
+        <%--<c:if test="${m.f=true}">--%>
+           <%--<c:out value="${'您还有购买过的商品未评价,请先完成评价再来下单哦!'}"></c:out>--%>
+        <%--</c:if>--%>
+        <%--<c:if test="${m.f!=true}">--%>
+            <%--<c:out value=""></c:out>--%>
+        <%--</c:if>--%>
     </div>
+
+
 </div>
 <div class="detail-box stark-components z-depth-1 row">
     <h1 class="title">商品详情</h1>

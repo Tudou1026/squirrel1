@@ -44,7 +44,9 @@
                 </div>
                 <span class="name">${cur_user.username}</span>
                 <span class="school">上海大学</span>
-                <span class="name">闲置数量：${cur_user.goodsNum}</span>
+                <span class="name">闲置数量:${cur_user.goodsNum}</span>
+                <span class="name">已售数量:<%=request.getAttribute("goodsNum")%></span>
+                <span class="name">我的积蓄:${cur_user.savings}(虚拟币)</span>
             </div>
             <div class="home_nav">
                 <ul>

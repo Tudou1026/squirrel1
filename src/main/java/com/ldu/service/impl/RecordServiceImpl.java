@@ -15,8 +15,12 @@ public class RecordServiceImpl implements RecordService {
     @Autowired
     RecordMapper recordMapper;
 
-    public int insertRecord(Record record){
-        return recordMapper.insertRecord(record);
+    public int addRecord(Integer userId, Integer goodsId){
+        return recordMapper.addRecord(userId, goodsId);
+    }
+
+    public Record selectById(Integer id){
+        return recordMapper.selectById(id);
     }
 
     public List<Record> selectByUserId(Integer userId){
@@ -24,7 +28,11 @@ public class RecordServiceImpl implements RecordService {
         return records;
     }
 
-    public int updateRecord(Integer userId, Integer goodsId){
-        return recordMapper.updateRecord(userId, goodsId);
+    public int deleteRecord(Integer id) {
+        return recordMapper.deleteRecord(id);
+    }
+
+    public int updateRecord(Integer id){
+        return recordMapper.updateRecord(id);
     }
 }

@@ -39,6 +39,11 @@ public interface GoodsService {
     public List<Goods> getAllGoods();
 
     /**
+     * 获取最近发布的10个商品信息
+     */
+    public List<Goods> selectOrderByDate();
+
+    /**
      * Author:guoxilong
      * 按商品成色排序
      */
@@ -48,7 +53,7 @@ public interface GoodsService {
      * Author:guoxilong
      * 按卖家信誉分排序
      */
-    List<Goods> searchGoodsOrderByCredit(@Param("name") String name,@Param("describle") String describle);
+    List<Goods> searchGoodsOrderByCredit(String name, String describle);
 
 
     /**

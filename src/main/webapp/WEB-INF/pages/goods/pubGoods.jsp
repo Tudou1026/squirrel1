@@ -114,7 +114,7 @@
                     <div class="changeinfo">
                         <span>出售价格：</span>
                         <input class="in_info" type="text" name="price" placeholder="请输入出售价格"/>
-                        <span>([虚拟币1~10]*必填)</span>
+                        <span>([虚拟币]*必填(正整数)</span>
                     </div>
                     <div class="changeinfo">
                         <span>成色：</span>

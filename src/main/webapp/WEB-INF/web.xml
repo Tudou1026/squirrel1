@@ -46,7 +46,7 @@
     <servlet-name>SpringMVC</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
-  <!-- 出错统一页面 -->
+   出错统一页面
   <error-page>
 	<error-code>400</error-code>
 	<location>/WEB-INF/pages/error/404.html</location>

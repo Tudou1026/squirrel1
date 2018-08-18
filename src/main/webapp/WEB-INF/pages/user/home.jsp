@@ -47,6 +47,7 @@
                 <span class="school">上海大学</span>
                 <span class="name">闲置数量：${cur_user.goodsNum}</span>
                 <span class="fa fa-share-alt">"快去分享一下"</span>
+                <span class="name">已售数量:<%=request.getAttribute("goodsNum")%></span>
             </div>
             <div class="home_nav">
                 <ul>
@@ -124,7 +125,7 @@
                 -->
                 <div class="share_content">
                     <div class="no_share">
-                        <span>没有任何内容，去逛逛其它的吧！</span>
+                        <span>没有任何内容,可能您的商品还在审核中,去逛逛其它的吧！</span>
                     </div>
                 </div>
             </div>

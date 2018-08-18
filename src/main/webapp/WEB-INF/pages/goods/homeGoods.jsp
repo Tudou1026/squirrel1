@@ -45,6 +45,22 @@
             }
         }
     </script>
+    <style>
+        div d{
+            border: 1px solid red;
+            position: relative;
+            height: 30em;
+        }
+
+         s{
+            border: 1px solid black;
+            position: absolute;
+            left: -900px;
+            top: -000px;        /* 修改他们的值就可以任意移动了*/
+             float:top
+        }
+    </style>
+
 <body ng-view="ng-view">
 <!--
     作者：hlk_1135@outlook.com
@@ -67,6 +83,12 @@
                         <label for="search" class="active">
                             <i ng-click="search()" class="iconfont"></i>
                         </label>
+                    </div>
+                    <div class="d">
+                        <input type="radio" id="female" name="condition" value="newPercent" class="s"/>
+                        <label for="female" style="color:GrayText">按成色排序</label>
+                        <input type="radio" id="male" name="condition" value="credit"/>
+                        <label for="male">按信誉分排序</label>
                     </div>
                 </form>
             </div>
@@ -140,7 +162,7 @@
                     <div class="input-field col s12">
                         <input type="password" name="password" required="required" class="validate ng-pristine ng-untouched ng-empty ng-invalid ng-invalid-required" />
                         <label>密码</label>
-                        <a ng-click="showForget()" class="forget-btn">忘记密码？</a>
+                        <%--<a ng-click="showForget()" class="forget-btn">忘记密码？</a>--%>
                     </div>
                     <button type="submit" class="waves-effect waves-light btn login-btn red lighten-1">
                         <i class="iconfont left"></i>
@@ -227,7 +249,7 @@
 -->
 <div ng-controller="sidebarController" class="sidebar stark-components ng-scope">
     <li ng-class="{true: 'active'}[isAll]">
-        <a href="/goods/catelog/1" class="index">
+        <a href="/goods/catelog/0" class="index">
             <img src="../img/index.png">
             <em>最新发布</em>
         </a>
@@ -326,7 +348,7 @@
     </div>
     <div class="waterfoo stark-components row">
         <div class="item-wrapper normal">
-            <c:forEach var="item" items="${catelogGoods1}">
+            <c:forEach var="item" items="${catelogGoods0}">
                 <div class="card col">
                     <a href="<%=basePath%>goods/goodsId/${item.goods.id}">
                         <div class="card-image">
@@ -538,5 +560,6 @@
         </div>
     </div>
 </div>
+
 </body>
 </html>

@@ -134,7 +134,7 @@
                                         <%--<span class="fa fa-heart"><a href="<%=basePath%>goods/editGoods/${items.goods.id}">编辑</a></span>--%>
                                         <%--<span class="fa fa-share"><a href="">擦亮</a></span>--%>
                                             <c:if test="${items.record.commentStatus==false}">
-                                                <span class="fa fa-commenting"><a href="<%=basePath%>goods/evaluateGoods/${items.record.id}&${items.record.goods.userId}">去评价</a></span>
+                                                <span class="fa fa-commenting"><a href="<%=basePath%>goods/evaluateGoods/${items.record.id}">去评价</a></span>
                                             </c:if>
                                             <c:if test="${items.record.commentStatus!=false}">
                                             <span class="fa fa-commenting"><a href="">已评价</a></span>

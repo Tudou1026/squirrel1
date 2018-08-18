@@ -59,13 +59,19 @@
                 <em class="em3">ldu.market</em>
             </a>
             <div class="nav-wrapper search-bar">
-                <form ng-submit="search()" class="ng-pristine ng-invalid ng-invalid-required" action="">
+                <form ng-submit="search()" class="ng-pristine ng-invalid ng-invalid-required" action="/goods/search">
                     <div class="input-field">
                         <input id="search" name="str" value="<c:out value="${search}"></c:out>" placeholder="搜点什么吧233..." style="height: 40px;"
                                class="ng-pristine ng-untouched ng-empty ng-invalid ng-invalid-required"/>
                         <label for="search" class="active">
                             <i ng-click="search()" class="iconfont"></i>
                         </label>
+                    </div>
+                    <div class="d">
+                        <input type="radio" id="female" name="condition" value="newPercent" class="s"/>
+                        <label for="female" style="color:GrayText">按成色排序</label>
+                        <input type="radio" id="male" name="condition" value="credit"/>
+                        <label for="male">按信誉分排序</label>
                     </div>
                 </form>
             </div>
@@ -139,7 +145,7 @@
                     <div class="input-field col s12">
                         <input type="password" name="password" required="required" class="validate ng-pristine ng-untouched ng-empty ng-invalid ng-invalid-required" />
                         <label>密码</label>
-                        <a ng-click="showForget()" class="forget-btn">忘记密码？</a>
+                        <%--<a ng-click="showForget()" class="forget-btn">忘记密码？</a>--%>
                     </div>
                     <button type="submit" class="waves-effect waves-light btn login-btn red lighten-1">
                         <i class="iconfont left"></i>
@@ -226,13 +232,13 @@
 -->
 <div ng-controller="sidebarController" class="sidebar stark-components ng-scope">
     <li ng-class="{true: 'active'}[isAll]">
-        <a href="<%=basePath%>goods/catelog/1" class="index">
+        <a href="<%=basePath%>goods/catelog/0" class="index">
             <img src="<%=basePath%>img/index.png">
             <em>最新发布</em>
         </a>
     </li>
     <li ng-class="{true: 'active'}[isDigital]">
-        <a href="/goods/catelog/1" class="digital">
+        <a href="<%=basePath%>goods/catelog/1" class="digital">
             <img src="<%=basePath%>img/digital.png"  />
             <em>闲置数码</em>
         </a>

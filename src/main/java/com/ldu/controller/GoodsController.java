@@ -1,14 +1,17 @@
 package com.ldu.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.*;
 import java.io.File;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import com.ldu.pojo.*;
 import com.ldu.service.*;
 import com.ldu.util.DateUtil;
+import com.ldu.util.message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +37,19 @@ public class GoodsController {
     @Autowired
     private RecordService recordService;
 
+    //公用方法
+    static void selectGoodsSort(List<Goods> goodsList, List<GoodsExtend> goodsAndImage, ImageService imageService) {
+        for (int j = 0; j < goodsList.size() ; j++) {
+            //将用户信息和image信息封装到GoodsExtend类中，传给前台
+            GoodsExtend goodsExtend = new GoodsExtend();
+            Goods goods = goodsList.get(j);
+            List<Image> images = imageService.getImagesByGoodsPrimaryKey(goods.getId());
+            goodsExtend.setGoods(goods);
+            goodsExtend.setImages(images);
+            goodsAndImage.add(j, goodsExtend);
+        }
+    }
+
     /**
      * 首页显示商品，每一类商品查询6件，根据最新上架排序 key的命名为catelogGoods1、catelogGoods2....
      *
@@ -47,39 +63,43 @@ public class GoodsController {
         int catelogSize = 7;
         //每个种类显示商品数量
         int goodsSize = 6;
+        String key;
+        List<Goods> goodsList = null;
+        List<GoodsExtend> goodsAndImage = null;
+        goodsList = goodsService.selectOrderByDate();
+        goodsAndImage = new ArrayList<GoodsExtend>();
+        selectGoodsSort(goodsList, goodsAndImage, imageService);
+        key = "catelog" + "Goods" + 0;
+        modelAndView.addObject(key, goodsAndImage);
         for (int i = 1; i <= catelogSize; i++) {
-            List<Goods> goodsList = null;
-            List<GoodsExtend> goodsAndImage = null;
             goodsList = goodsService.getGoodsByCatelogOrderByDate(i, goodsSize);
             goodsAndImage = new ArrayList<GoodsExtend>();
-            for (int j = 0; j < goodsList.size() ; j++) {
-                //将用户信息和image信息封装到GoodsExtend类中，传给前台
-                GoodsExtend goodsExtend = new GoodsExtend();
-                Goods goods = goodsList.get(j);
-                List<Image> images = imageService.getImagesByGoodsPrimaryKey(goods.getId());
-                goodsExtend.setGoods(goods);
-                goodsExtend.setImages(images);
-                goodsAndImage.add(j, goodsExtend);
-            }
-            String key = "catelog" + "Goods" + i;
+            selectGoodsSort(goodsList, goodsAndImage, imageService);
+            key = "catelog" + "Goods" + i;
             modelAndView.addObject(key, goodsAndImage);
         }
         modelAndView.setViewName("goods/homeGoods");
         return modelAndView;
     }
 
+
+    /**
+     * 根据输入模糊查询，提供两种排序方式，成色，卖家信誉
+     * @param str
+     * @param condition
+     * @return
+     * @Author guoxilong
+     */
     @RequestMapping(value = "/search")
-    public ModelAndView searchGoods(@RequestParam(value = "str",required = false) String str)throws Exception {
-        List<Goods> goodsList = goodsService.searchGoodsOrderByNew(str,str);
+    public ModelAndView searchGoods(@RequestParam(value = "str",required = true) String str,
+                                    @RequestParam(value = "condition", required = false) String condition)throws Exception {
+        List<Goods> goodsList;
+        if("credit".equals(condition))
+            goodsList = goodsService.searchGoodsOrderByCredit(str,str);
+        else
+            goodsList = goodsService.searchGoodsOrderByNew(str,str);
         List<GoodsExtend> goodsExtendList = new ArrayList<GoodsExtend>();
-        for(int i = 0;i<goodsList.size();i++) {
-            GoodsExtend goodsExtend = new GoodsExtend();
-            Goods goods = goodsList.get(i);
-            List<Image> imageList = imageService.getImagesByGoodsPrimaryKey(goods.getId());
-            goodsExtend.setGoods(goods);
-            goodsExtend.setImages(imageList);
-            goodsExtendList.add(i,goodsExtend);
-        }
+        selectGoodsSort(goodsList, goodsExtendList, imageService);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("goodsExtendList", goodsExtendList);
         modelAndView.addObject("search",str);
@@ -97,17 +117,17 @@ public class GoodsController {
     @RequestMapping(value = "/catelog/{id}")
     public ModelAndView catelogGoods(HttpServletRequest request,@PathVariable("id") Integer id,
                                      @RequestParam(value = "str",required = false) String str) throws Exception {
-        List<Goods> goodsList = goodsService.getGoodsByCatelog(id,str,str);
-        Catelog catelog = catelogService.selectByPrimaryKey(id);
-        List<GoodsExtend> goodsExtendList = new ArrayList<GoodsExtend>();
-        for(int i = 0;i<goodsList.size();i++) {
-            GoodsExtend goodsExtend = new GoodsExtend();
-            Goods goods = goodsList.get(i);
-            List<Image> imageList = imageService.getImagesByGoodsPrimaryKey(goods.getId());
-            goodsExtend.setGoods(goods);
-            goodsExtend.setImages(imageList);
-            goodsExtendList.add(i,goodsExtend);
+        List<Goods> goodsList;
+        Catelog catelog;
+        if(id>0) {
+            goodsList = goodsService.getGoodsByCatelog(id, str, str);
+            catelog = catelogService.selectByPrimaryKey(id);
+        }else{
+            goodsList = goodsService.selectOrderByDate();
+            catelog = new Catelog(0,"最新发布",10,null);
         }
+        List<GoodsExtend> goodsExtendList = new ArrayList<GoodsExtend>();
+        selectGoodsSort(goodsList, goodsExtendList, imageService);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("goodsExtendList", goodsExtendList);
         modelAndView.addObject("catelog", catelog);
@@ -116,6 +136,7 @@ public class GoodsController {
         return modelAndView;
     }
 
+
     /**
      * 根据商品id查询该商品详细信息
      * @param id
@@ -123,7 +144,8 @@ public class GoodsController {
      * @throws Exception
      */
     @RequestMapping(value = "/goodsId/{id}")
-    public ModelAndView getGoodsById(@PathVariable("id") Integer id,@RequestParam(value = "str",required = false) String str) throws Exception {
+    public ModelAndView getGoodsById(@PathVariable("id") Integer id, HttpServletRequest request,
+                                     @RequestParam(value = "str",required = false) String str) throws Exception {
         Goods goods = goodsService.getGoodsByPrimaryKey(id);
         User seller = userService.selectByPrimaryKey(goods.getUserId());
         Catelog catelog = catelogService.selectByPrimaryKey(goods.getCatelogId());
@@ -133,6 +155,7 @@ public class GoodsController {
         goodsExtend.setImages(imageList);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("goodsExtend", goodsExtend);
+        request.getSession().setAttribute("goodsExtend", goodsExtend);
         modelAndView.addObject("seller", seller);
         modelAndView.addObject("search",str);
         modelAndView.addObject("catelog", catelog);
@@ -164,17 +187,64 @@ public class GoodsController {
     }
 
     /**
-     * author:guoxilong
      * 跳到打分页面
+     * author:guoxilong
      */
-    @RequestMapping(value = "/evaluateGoods/{id}&{userId}")
-    public ModelAndView evaluateGoods(@PathVariable("id") Integer id, @PathVariable("userId") Integer userId,
+    @RequestMapping(value = "/evaluateGoods/{id}")
+    public String evaluateGoods(@PathVariable("id") Integer id,
                                  HttpServletRequest request){
         request.getSession().setAttribute("recordId", id);
-        request.getSession().setAttribute("goodsUserId", userId);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("/goods/goodsScore");
-        return modelAndView;
+        return "/goods/goodsScore";
+    }
+
+    /**
+     * 删除购物记录
+     * @param id
+     * @return
+     * @Author guoxilong
+     */
+    @RequestMapping(value = "/deleteRecords/{id}")
+    public String deleteRecords(@PathVariable("id") Integer id,HttpServletRequest request){
+        recordService.deleteRecord(id);
+        return "redirect:/user/allGoods";
+    }
+
+    /**
+     * 提交评价
+     * @param score1
+     * @param score2
+     * @param score3
+     * @return
+     * @Author guoxilong
+     */
+    @RequestMapping(value = "/markSubmit", method = RequestMethod.POST)
+    public String markSubmit(@RequestParam(value = "score1", required = true) String score1,
+                             @RequestParam(value = "score2", required = true) String score2,
+                             @RequestParam(value = "score3", required = true) String score3 ,
+                             HttpSession session){
+        String recordId = String.valueOf(session.getAttribute("recordId"));
+        int id = Integer.parseInt(recordId);
+        int userId = recordService.selectById(id).getGoods().getUserId();
+        User user = userService.selectByPrimaryKey(userId);
+        int markNum = user.getMarkNum();
+        Double credit;
+        if(markNum==0)
+            credit = 0.0;
+        else
+            credit = user.getCredit();
+        double s1 = (double)Integer.parseInt(score1.trim());
+        double s2 = (double)Integer.parseInt(score2.trim());
+        double s3 = (double)Integer.parseInt(score3.trim());
+        //计算用户信誉分
+        Double newCredit = (Double)(markNum * credit + (s1 + s2 + s3)/3)/(markNum + 1);
+        //四舍五入
+        double creditValue =new BigDecimal(newCredit).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+        user.setCredit(creditValue);
+        user.setMarkNum(markNum+1);
+        recordService.updateRecord(id);
+        userService.updateUserName(user);
+        session.setAttribute("cur_user", user);
+        return "redirect:/user/allGoods";
     }
 
     /**
@@ -203,6 +273,56 @@ public class GoodsController {
     public ModelAndView offGoods() throws Exception {
 
         return null;
+    }
+
+    /**
+     * 购买商品
+     * @param
+     * @return
+     * @Author guoxilong
+     */
+    @RequestMapping(value = "/buyGoods")
+    public void buyGoods(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String url=request.getHeader("Referer");
+        message m = new message(true);
+        User cur_user = (User)request.getSession().getAttribute("cur_user");
+        //用户是否有商品未评价
+        Boolean flag = true;
+        List<Record> recordList = recordService.selectByUserId(cur_user.getId());
+        for(Record record: recordList){
+            if(record.getCommentStatus()==false){
+                flag = false;
+                break;
+            }
+        }
+        //全部已评价
+        if(flag){
+            GoodsExtend goodsExtend = (GoodsExtend)request.getSession().getAttribute("goodsExtend");
+            Goods goods = goodsExtend.getGoods();
+            Integer goodsId = goods.getId();
+            User seller = userService.selectByPrimaryKey(goods.getUserId());
+            Integer price = goodsExtend.getGoods().getPrice();
+            Integer savingsOfBuyer = cur_user.getSavings();
+            Integer savingsOfSeller = seller.getSavings();
+            goods.setCheckStatus(2);
+            cur_user.setSavings(savingsOfBuyer - price);
+            seller.setSavings(savingsOfSeller + price);
+            goodsService.updateGoodsByPrimaryKeyWithBLOBs(goodsId, goods);
+            recordService.addRecord(cur_user.getId(), goodsId);
+            userService.updateUserName(cur_user);
+            userService.updateUserName(seller);
+//            return "redirect:/goods/homeGoods";
+            response.sendRedirect("/goods/homeGoods");
+        }
+        else{
+            response.setContentType("text/html; charset=UTF-8"); //转码
+            PrintWriter out = response.getWriter();
+            out.flush();
+            out.println("<script>");
+            out.println("alert('您还有购买过的商品未评价,请先去评价再来下单哦!');");
+            out.println("window.history.back();</script>");
+//            return "redirect:"+url;
+        }
     }
 
     /**
@@ -257,6 +377,7 @@ public class GoodsController {
         User cur_user = (User)request.getSession().getAttribute("cur_user");
         goods.setUserId(cur_user.getId());
         goods.setCommetNum(0);
+        goods.setCheckStatus(0);
         int i = goodsService.addGood(goods,10);//在goods表中插入物品
         //返回插入的该物品的id
         int goodsId = goods.getId();

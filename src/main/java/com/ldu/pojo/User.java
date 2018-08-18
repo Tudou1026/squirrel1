@@ -33,7 +33,7 @@ public class User {
 
     private String lastLogin;
     //账号状态，是否被冻结
-    private Byte status;
+    private Boolean status;
     //用户权限 true为管理员, false为普通用户
     private Boolean power;
     //被评价次数

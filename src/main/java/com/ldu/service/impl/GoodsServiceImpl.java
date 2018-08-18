@@ -50,6 +50,17 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     /**
+     * 查询最近发布的10个商品
+     * @param
+     * @return
+     * @Author guoxilong
+     */
+    public List<Goods> selectOrderByDate() {
+        List<Goods> goods = goodsMapper.selectOrderByDate();
+        return goods;
+    }
+
+    /**
      * Author:guoxilong
      * 按商品成色排序
      */

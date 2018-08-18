@@ -9,19 +9,7 @@
         <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
         <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
 
-        <association property="goods" column="goods_id" javaType="com.ldu.pojo.Goods" select="com.ldu.dao.GoodsMapper.selectByPrimaryKey" >
-            <!--<id column="id" property="id" jdbcType="INTEGER" />-->
-            <!--<result column="catelog_id" property="catelogId" jdbcType="INTEGER" />-->
-            <!--<result column="user_id" property="userId" jdbcType="INTEGER" />-->
-            <!--<result column="name" property="name" jdbcType="VARCHAR" />-->
-            <!--<result column="price" property="price" jdbcType="INTEGER" />-->
-            <!--<result column="percent_new" property="percentNew" jdbcType="INTEGER" />-->
-            <!--<result column="start_time" property="startTime" jdbcType="VARCHAR" />-->
-            <!--<result column="end_time" property="endTime" jdbcType="VARCHAR" />-->
-            <!--<result column="commet_num" property="commetNum" jdbcType="INTEGER" />-->
-            <!--<result column="polish_time" property="polishTime" jdbcType="VARCHAR" />-->
-            <!--<result column="check_status" property="checkStatus" jdbcType="INTEGER" />-->
-            <!--<result column="describle" property="describle" jdbcType="LONGVARCHAR" />-->
+        <association property="goods" column="goods_id" javaType="com.ldu.pojo.Goods" select="com.ldu.dao.GoodsMapper.selectById" >
         </association>
     </resultMap>
 
@@ -29,5 +17,25 @@
         select * from record
         where user_id = #{userId,jdbcType=INTEGER}
     </select>
+
+    <select id="selectById" parameterType="Integer" resultMap="RecordList">
+        select * from record
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <insert id="addRecord">
+        insert into record(user_id, goods_id)
+        values (#{user_id,jdbcType=INTEGER}, #{goods_id,jdbcType=INTEGER})
+    </insert>
+
+    <update id="updateRecord" parameterType="Integer">
+        update record set comment_status = true
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <delete id="deleteRecord" parameterType="Integer">
+        delete from record
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
 
 </mapper>

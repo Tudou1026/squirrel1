@@ -67,6 +67,12 @@
                             <i ng-click="search()" class="iconfont"></i>
                         </label>
                     </div>
+                    <div class="d">
+                        <input type="radio" id="female" name="condition" value="newPercent" class="s"/>
+                        <label for="female" style="color:GrayText">按成色排序</label>
+                        <input type="radio" id="male" name="condition" value="credit"/>
+                        <label for="male">按信誉分排序</label>
+                    </div>
                 </form>
             </div>
             <ul class="right">
@@ -139,7 +145,7 @@
                     <div class="input-field col s12">
                         <input type="password" name="password" required="required" class="validate ng-pristine ng-untouched ng-empty ng-invalid ng-invalid-required" />
                         <label>密码</label>
-                        <a ng-click="showForget()" class="forget-btn">忘记密码？</a>
+                        <%--<a ng-click="showForget()" class="forget-btn">忘记密码？</a>--%>
                     </div>
                     <button type="submit" class="waves-effect waves-light btn login-btn red lighten-1">
                         <i class="iconfont left"></i>
