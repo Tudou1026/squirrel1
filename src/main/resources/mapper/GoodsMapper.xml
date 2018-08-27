@@ -45,8 +45,8 @@
     select
     *
     from goods
-    where name like concat('%',#{name},'%') OR describle like concat('%',#{describle},'%')
-    and check_status=1
+    where (name like concat('%',#{name},'%') OR describle like concat('%',#{describle},'%'))
+    and check_status=1 and str_to_date(end_time,'%Y-%m-%d') >= curdate()
     order by percent_new DESC
   </select>
 
@@ -56,8 +56,8 @@
     from goods a
     join user b
     on a.user_id=b.id
-    where a.name like concat('%',#{name},'%') OR a.describle like concat('%',#{describle},'%')
-                                                and check_status=1
+    where (a.name like concat('%',#{name},'%') OR a.describle like concat('%',#{describle},'%'))
+    and check_status=1 and str_to_date(end_time,'%Y-%m-%d') >= curdate()
     order by b.credit DESC
 
   </select>
@@ -81,9 +81,15 @@
     where check_status=1
   </select>
 
+  <select id="selectUnCheckedAllGoods" resultMap="ResultMapWithBLOBs">
+    select * from goods
+    where check_status=0
+  </select>
+
   <select id="selectOrderByDate" resultMap="ResultMapWithBLOBs">
     select * from goods
     where check_status=1
+    and str_to_date(end_time,'%Y-%m-%d') >= curdate()
     order by polish_time desc
     limit 10
   </select>
@@ -96,7 +102,7 @@
   <select id="selectByCatelogOrderByDate" resultMap="ResultMapWithBLOBs">
     select * from goods
     where catelog_id = #{catelogId,jdbcType=INTEGER}
-      and check_status=1
+    and check_status=1 and str_to_date(end_time,'%Y-%m-%d') >= curdate()
     order by str_to_date(polish_time,'%Y-%m-%d') DESC
     limit #{limit,jdbcType=INTEGER}
   </select>

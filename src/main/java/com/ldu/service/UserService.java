@@ -11,6 +11,8 @@ public interface UserService {
 
     public void updateUserName(User user);
 
+    public void updateUserStatus(User user);
+
     int updateGoodsNum(Integer id,Integer goodsNum);
 
     User selectByPrimaryKey(Integer id);

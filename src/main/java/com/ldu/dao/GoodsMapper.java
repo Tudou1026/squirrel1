@@ -37,6 +37,8 @@ public interface GoodsMapper {
      */
     Goods selectByPrimaryKey(Integer id);
 
+    Goods selectById(Integer id);
+
     /**
      * 通过主键更改信息
      * @param record
@@ -63,6 +65,9 @@ public interface GoodsMapper {
      * @return
      */
     public List<Goods> selectAllGoods();
+
+
+    public List<Goods> selectUnCheckedAllGoods();
 
     /**
      * Author:guoxilong

@@ -73,13 +73,16 @@ public class UserController {
         String url=request.getHeader("Referer");
         if(cur_user != null) {
             String pwd = MD5.md5(user.getPassword());
+
+
             if(pwd.equals(cur_user.getPassword()) && cur_user.getStatus()==true) {
                 if(cur_user.getPower()==false) {
                     request.getSession().setAttribute("cur_user", cur_user);
                     return new ModelAndView("redirect:" + url);
                 }
                 else{
-                    //管理员要进入的页面
+                    request.getSession().setAttribute("cur_user", cur_user);
+                    return new ModelAndView("redirect:/admin/home" );//管理员要进入的页面
                 }
             }
         }
@@ -103,6 +106,25 @@ public class UserController {
         request.getSession().setAttribute("cur_user",cur_user);//修改session值
         return new ModelAndView("redirect:"+url);
     }
+
+    @RequestMapping(value = "/changeStatus")
+    public ModelAndView changeStatus(HttpServletRequest request,@RequestParam("userId") String userId, @RequestParam("userStatus") String userStatus) {
+        String url=request.getHeader("Referer");
+        //从session中获取出当前用户
+        int userId1=Integer.parseInt(userId);
+        int status=Integer.parseInt(userStatus);
+        User cur_user = userService.selectByPrimaryKey(userId1);
+        if(status==1){//dongjie
+            cur_user.setStatus(false);
+        } else if (status == 0) {//jiedong
+            cur_user.setStatus(true);
+        }
+        //cur_user.setUsername(user.getUsername());//更改当前用户的用户名
+        userService.updateUserName(cur_user);//执行修改操作
+        // request.getSession().setAttribute("cur_user",cur_user);//修改session值
+        return new ModelAndView("redirect:"+url);
+    }
+
 
     /**
      * 完善或修改信息
@@ -186,16 +208,16 @@ public class UserController {
         User cur_user = (User)request.getSession().getAttribute("cur_user");
         Integer userId = cur_user.getId();
         List<Record> recordsList = recordService.selectByUserId(userId);
-        System.out.println(recordsList);
+        //System.out.println(recordsList);
         List<RecordExtend> recordsAndImage = new ArrayList<RecordExtend>();
         for (int i = 0; i < recordsList.size(); i++) {
             //将用户购物信息和image信息封装到recordExtend类中，传给前台
             RecordExtend recordExtend = new RecordExtend();
-            System.out.println(recordExtend);
+            //System.out.println(recordExtend);
             Goods goods = recordsList.get(i).getGoods();
-            System.out.println(goods);
+            //System.out.println(goods);
             List<Image> images = imageService.getImagesByGoodsPrimaryKey(goods.getId());
-            System.out.println(images);
+            //System.out.println(images);
             recordExtend.setRecord(recordsList.get(i));
             recordExtend.setImages(images);
             recordsAndImage.add(i, recordExtend);

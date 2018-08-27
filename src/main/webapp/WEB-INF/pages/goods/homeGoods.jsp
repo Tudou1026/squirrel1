@@ -73,7 +73,7 @@
             <a href="<%=basePath%>goods/homeGoods" class="logo">
                 <em class="em1">上大</em>
                 <em class="em2">二手工坊</em>
-                <em class="em3">ldu.market</em>
+                <em class="em3">SHU.market</em>
             </a>
             <div class="nav-wrapper search-bar">
                 <form ng-submit="search()" class="ng-pristine ng-invalid ng-invalid-required" action="/goods/search">
@@ -390,7 +390,7 @@
                             <p><c:out value="${item.goods.name}"></c:out></p>
                         </div>
                         <div class="card-content item-location">
-                            <p>上海东大学</p>
+                            <p>上海大学</p>
                             <p><c:out value="${item.goods.startTime}"></c:out></p>
                         </div>
                     </a>

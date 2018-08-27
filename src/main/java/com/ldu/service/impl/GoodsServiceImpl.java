@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.github.pagehelper.PageHelper;
+import com.ldu.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,12 @@ public class GoodsServiceImpl implements GoodsService {
         return goods;
     }
 
+    public Goods getGoodsById(Integer goodsId){
+
+        Goods goods = goodsMapper.selectById(goodsId);
+        return goods;
+    }
+
     public void deleteGoodsByPrimaryKey(Integer id) {
         goodsMapper.deleteByPrimaryKey(id);
     }
@@ -49,6 +57,16 @@ public class GoodsServiceImpl implements GoodsService {
         return goods;
     }
 
+    public int UncheckedGoodsNum(){
+        List<Goods> goods = goodsMapper.selectUnCheckedAllGoods();
+        return goods.size();
+    }
+
+    public List<Goods> getPageGoods(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum,pageSize);//分页核心代码
+        List<Goods> data= goodsMapper.selectUnCheckedAllGoods();
+        return data;
+    }
     /**
      * 查询最近发布的10个商品
      * @param
@@ -99,5 +117,7 @@ public class GoodsServiceImpl implements GoodsService {
         List<Goods> goodsList = goodsMapper.getGoodsByUserId(user_id);
         return goodsList;
     }
+
+
 
 }

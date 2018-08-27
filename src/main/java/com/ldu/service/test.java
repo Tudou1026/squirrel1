@@ -1,6 +1,8 @@
 package com.ldu.service;
 
+import com.ldu.pojo.Goods;
 import com.ldu.pojo.Record;
+import com.ldu.pojo.User;
 import com.ldu.util.MD5;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +56,16 @@ public class test {
         List<Record> list = recordService.selectByUserId(2);
         System.out.println(list);
         System.out.println(recordService.selectByUserId(2));
+    }
+
+    @Test
+    public void  getUncheckedGoods(){
+        int num = goodsService.UncheckedGoodsNum();
+        List<Goods> list = goodsService.getPageGoods(1,2);
+        List<User> userList = userService.getPageUser(1,5);
+        System.out.println(userList);
+        System.out.println(list);
+        System.out.println(num);
     }
 
 }

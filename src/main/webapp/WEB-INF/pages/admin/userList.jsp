@@ -36,16 +36,16 @@
 	<div class="row">
 		<div class="col-md-12">
 			<h2>Squirrel用户信息</h2>
-			<a class="btn btn-primary" href="/admin/exportUser">导出数据为excel</a>
+			<%--<a class="btn btn-primary" href="/admin/exportUser">导出数据为excel</a>--%>
 			<a class="btn btn-primary" href="#" id="add">添加用户</a>
-			<div class="btn-group">
-				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					查看接口数据 <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu">
-					<li><a href="/admin/users?current=1&rowCount=10&sort[sender]=asc&searchPhrase=&id=b0df282a-0d67-40e5-8558-c9e93b7befed" target="_blank">JSON</a></li>
-				</ul>
-			</div>
+			<%--<div class="btn-group">--%>
+				<%--<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--%>
+					<%--查看接口数据 <span class="caret"></span>--%>
+				<%--</button>--%>
+				<%--<ul class="dropdown-menu">--%>
+					<%--<li><a href="/admin/users?current=1&rowCount=10&sort[sender]=asc&searchPhrase=&id=b0df282a-0d67-40e5-8558-c9e93b7befed" target="_blank">JSON</a></li>--%>
+				<%--</ul>--%>
+			<%--</div>--%>
 			<table id="grid-data" class="table table-condensed table-hover table-striped">
 				<thead>
 				<tr>
@@ -55,7 +55,7 @@
 					<th data-column-id="qq">QQ</th>
 					<th data-column-id="createAt">开通时间</th>
 					<th data-column-id="goodsNum">商品数量</th>
-					<th data-column-id="power">用户权限</th>
+					<th data-column-id="status">用户状态</th>
 					<th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
 				</tr>
 				</thead>
@@ -69,9 +69,9 @@
             ajax:true,
             post: function ()
             {
-                return {
-                    id: "b0df282a-0d67-40e5-8558-c9e93b7befed"
-                };
+                // return {
+                //     id: "b0df282a-0d67-40e5-8558-c9e93b7befed"
+                // };
             },
             url:"/admin/users",
             formatters: {
@@ -89,7 +89,7 @@
                 $.post("/admin/getUserInfo",{userId:$(this).data("row-id")},function(str){
                     $("#userId2").val(str.id);
                     $("#userName2").val(str.username);
-                    $("#userPower2").val(str.power);
+                    $("#userPower2").val(str.status);
                 });
             }).end().find(".command-delete").on("click", function(e)
             {
@@ -117,7 +117,7 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">信息修改</h4>
 			</div>
-			<form action="" method="post">
+			<form action="/user/changeStatus" method="post">
 				<div class="modal-body">
 					<div class="form-group">
 						<label for="userId2">userId</label>
@@ -128,8 +128,8 @@
 						<input type="text" name="userName" class="form-control" id="userName2" readonly="true">
 					</div>
 					<div class="form-group">
-						<label for="userPower2">userPower</label>
-						<input type="text" name="userPower" class="form-control" id="userPower2">
+						<label for="userStatus2">userStatus(输入1表示冻结)</label>
+						<input type="text" name="userStatus" class="form-control" id="userStatus2">
 					</div>
 				</div>
 				<div class="modal-footer">

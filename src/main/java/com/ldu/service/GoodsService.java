@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ldu.pojo.Catelog;
 import com.ldu.pojo.Goods;
+import com.ldu.pojo.User;
 import org.apache.ibatis.annotations.Param;
 
 public interface GoodsService {
@@ -15,11 +16,20 @@ public interface GoodsService {
     public int addGood(Goods goods , Integer duration);
 
     /**
-     * 通过主键获取商品
+     * 通过主键获取商品 已审核过的
      * @param goodsId
      * @return
      */
+
+
     public Goods getGoodsByPrimaryKey(Integer goodsId);
+
+    /**
+     * 查询所有
+     * @param goodsId
+     * @return
+     */
+    public Goods getGoodsById(Integer goodsId);
 
     /**
      * 更新商品信息
@@ -38,6 +48,9 @@ public interface GoodsService {
      */
     public List<Goods> getAllGoods();
 
+    public int UncheckedGoodsNum();
+
+    public List<Goods> getPageGoods(int pageNum, int pageSize);
     /**
      * 获取最近发布的10个商品信息
      */

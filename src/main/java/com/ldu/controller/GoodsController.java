@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.*;
 import java.io.File;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -23,6 +24,9 @@ import org.springframework.web.servlet.ModelAndView;
 public class GoodsController {
 
     @Autowired
+    private ITestExportExcelService service;
+
+    @Autowired
     private GoodsService goodsService;
 
     @Autowired
@@ -36,6 +40,21 @@ public class GoodsController {
 
     @Autowired
     private RecordService recordService;
+
+    @RequestMapping(value = "/exportExcel")
+    public String exportExcel(HttpServletResponse response) {
+        response.setContentType("application/binary;charset=ISO8859_1");
+        try {
+            ServletOutputStream outputStream = response.getOutputStream();
+            String fileName = new String(("导出excel例子").getBytes(), "ISO8859_1");
+            response.setHeader("Content-disposition", "attachment; filename=" + fileName + ".xlsx");// 组装附件名称和格式
+            String[] titles = {"商品名", "商品发布时间", "商品描述"};
+            service.exportExcel(titles, outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     //公用方法
     static void selectGoodsSort(List<Goods> goodsList, List<GoodsExtend> goodsAndImage, ImageService imageService) {
@@ -162,6 +181,24 @@ public class GoodsController {
         modelAndView.setViewName("/goods/detailGoods");
         return modelAndView;
     }
+
+    @RequestMapping(value = "/changeCheckStatus")
+    public ModelAndView changeCheckStatus(HttpServletRequest request,@RequestParam("goodsId") String goodsId, @RequestParam("goodsStatus") String goodsStatus) {
+        String url=request.getHeader("Referer");
+        //从session中获取出当前用户
+        int goodsId1=Integer.parseInt(goodsId);
+        int status=Integer.parseInt(goodsStatus);
+        Goods cur_goods = goodsService.getGoodsById(goodsId1);
+        if(status==1){//dongjie
+            cur_goods.setCheckStatus(1);
+        }
+        //cur_user.setUsername(user.getUsername());//更改当前用户的用户名
+        goodsService.updateGoodsByPrimaryKeyWithBLOBs(goodsId1,cur_goods);
+        //userService.updateUserName(cur_user);//执行修改操作
+        // request.getSession().setAttribute("cur_user",cur_user);//修改session值
+        return new ModelAndView("redirect:"+url);
+    }
+
 
     /**
      * 修改商品信息
